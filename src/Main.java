@@ -2,14 +2,8 @@
  *  ©2023 Lukáš Tomek
  */
 
-/* TODO • write a class with polymorph methods to take input from user using the singleton ScannerSystemInSingleton class
-          (because also when using a menu, user will need to give an input)
-          • method with string input
-          • method with int input (parameters: from-to)
-   FIXME
- */
-
 import java.util.InputMismatchException;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
@@ -18,18 +12,24 @@ public class Main {
 
         System.out.println("-----------------------------------------------------------");
         Board board = new Board();
-        board.draw();
+        board.draw_board();
         board.users_turn();
-        board.draw();
+        board.draw_board();
+        board.computers_turn();
+        board.draw_board();
         board.users_turn();
-        board.draw();
-        board.users_turn();
-        board.draw();
+        board.draw_board();
+        board.computers_turn();
 
         System.out.println("-----------------------------------------------------------");
     }
 }
 
+class Game {
+    /*TODO • los kdo zacina a podle toho bude jiny cyklus stridajicich se tahu
+           • stav hry tahat jako board.matches_on_board
+     */
+}
 
 
 class Board {
@@ -41,7 +41,7 @@ class Board {
     }
 
     //Drawing matchsticks on the board
-    public void draw() {
+    public void draw_board() {
         System.out.println("There are " + matches_on_board + " matchsticks on the board now.");
         if (matches_on_board > 0) {
             for (int i = 0; i < (matches_on_board - 1); i++) {
@@ -55,13 +55,41 @@ class Board {
 
     //User's turn
     public void users_turn() {
-        System.out.println("How many matchsticks do you want to take? (You can take 1 or 2 or 3.) Enter the number and press Enter.");
+        UsersInput users_input = new UsersInput();
+        matches_on_board -= users_input.MinMaxNumber("How many matchsticks do you want to take? (You can take 1 or 2 or 3.) Enter the number and press Enter.", 1, 3);
+    }
+
+    //Computer's turn
+    public void computers_turn(){
+        int computer_takes;
+        //If computer goes first, it takes random number to obscure the winning strategy. It also takes random number in non-winnable situation.
+        if ((matches_on_board == 15) || ((matches_on_board-1)%4 == 0)) {
+            Random random_number = new Random();
+            computer_takes = random_number.nextInt(3)+1;   //nextInt(x) returns random int from 0 to (x-1)
+        //This is the optimal winning strategy
+        } else {
+            computer_takes = (matches_on_board-1)%4;
+        }
+        if (computer_takes == 1) {
+            System.out.println("I have taken " + computer_takes + " matchstick.");
+        } else {
+            System.out.println("I have taken " + computer_takes + " matchsticks.");
+        }
+        matches_on_board -= computer_takes;
+    }
+
+}
+
+class UsersInput {
+    //More methods with different parameters could be added later here (polymorphism)
+    public int MinMaxNumber (String prompt, int min, int max){
+        System.out.println(prompt);
         int user_takes = 0;
         boolean input_is_int;
         do {
             do {
-                input_is_int = true;
                 try {
+                    input_is_int = true;
                     user_takes = ScannerSystemInSingleton.getInstance().nextInt();
                 } catch (InputMismatchException e) {
                     System.out.println("You have to enter a number, try again.");
@@ -72,26 +100,24 @@ class Board {
                     ScannerSystemInSingleton.getInstance().nextLine();
                 }
             } while (!input_is_int);
-            if (user_takes >= 1 && user_takes <= 3) {
-                matches_on_board -= user_takes;
-            } else if (user_takes < 1) {
+            if (user_takes < min) {
                 System.out.println("You can not take less then 1 matchsticks, try again.");
-            } else {
+            } else if (user_takes > max){
                 System.out.println("You can not take more than 3 matchsticks, try again.");
             }
-        } while (user_takes < 1 || user_takes > 3);
-        /* scanner.close(); - If we close it, we can not use system.in for the rest of the program!
-                              Closing Scanner will automatically close the underlying stream with which it was created (here System.in).
-                              Close only resources you have opened yourself. System.in is managed
-                              by the JVM, you don't need to close it. The JVM will close it. */
+        } while (user_takes < min || user_takes > max);
+        /* return in if statements: 2 options
+           1) it must be in all if/else statements (so the compiler is sure the method will certainly return in any case)
+           2) we will use it only at the end of the method
+        */
+        return user_takes;
     }
-
 }
 
 /* ----- SINGLETON CLASS -----
    • Having multiple scanners on the same stream is a bad practice, because scanners would share and consume that 1 stream.
-   • There are less elegant solutions, like global variable (e.g. in Main and called like Main.scanner by other classes).
-     Other less elegant solution is to pass scanner as a parameter in methods called like board.users_turn(scanner).
+   • There are less elegant solutions, like global variable (e.g. in Main and called like Main.scanner by other classes) or
+     pass scanner as a parameter in methods called like board.users_turn(scanner).
      The truly right OOP solution is to declare a SINGLETON CLASS (=class, from which only 1 object can be instantiated).
    • Here, we see LAZY INITIALIZATION implementation (memory effective, but not thread-safe)
  */
@@ -121,11 +147,18 @@ final class ScannerSystemInSingleton {    //final = can not be extended
 
 /*----- SINGLETON CLASS: EAGER INITIALIZATION -----
 class MyScanner{
-    //Disadvantage: The instance of the singleton class is created at the time of class loading before any method is used (can take memory).
+    //Disadvantage: The instance of the singleton class is created at the time of loading the class - before any method is used (can take memory).
+    //Better is to use LAZY INITIALIZATION.
     private static final Scanner instance = new Scanner(System.in);
     private MyScanner(){
     }
     public static Scanner getInstance(){
         return instance;
     }
-}*/
+}
+
+----- SHOULD WE USE scanner.close()? NO! -----
+• If we close it, we can not use system.in for the rest of the program!
+• Closing Scanner will automatically close the underlying stream with which it was created (e.g. System.in).
+• Close only resources you have opened yourself. System.in is managed by the JVM, you don't need to close it. The JVM will close it.
+*/
