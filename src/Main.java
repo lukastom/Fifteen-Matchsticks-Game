@@ -7,27 +7,74 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
-
     public static void main(String[] args) {
-
-        System.out.println("-----------------------------------------------------------");
-        Board board = new Board();
-        board.draw_board();
-        board.users_turn();
-        board.draw_board();
-        board.computers_turn();
-        board.draw_board();
-        board.users_turn();
-        board.draw_board();
-        board.computers_turn();
-
-        System.out.println("-----------------------------------------------------------");
+        Game game = new Game();
+        game.lets_play();
     }
 }
 
 class Game {
-    /*TODO • los kdo zacina a podle toho bude jiny cyklus stridajicich se tahu
-           • stav hry tahat jako board.matches_on_board
+    static int lot;
+    Board board;
+    boolean first_run;
+    boolean pc_plays_first;
+    boolean pc_plays_now;
+
+    Game (){
+        Random random = new Random();
+        lot = random.nextInt(2); //0 - computer, 1 - player
+        if (lot == 0) {
+            System.out.println("A random draw decided that the first turn is mine this game.");
+            pc_plays_first = true;
+            pc_plays_now = true;
+        } else {
+            System.out.println("A random draw decided that the first turn is yours this game.");
+            pc_plays_first = false;
+            pc_plays_now = false;
+        }
+        first_run = true;
+        board = new Board();
+    }
+
+    public void lets_play(){
+
+        if (!first_run){
+            if (pc_plays_first){
+                System.out.println("The first turn is mine this game.");
+                pc_plays_now = true;
+            } else {
+                System.out.println("The first turn is yours this game.");
+                pc_plays_now = false;
+            }
+        }
+
+        while (board.matches_on_board > 0) {
+            board.draw_board();
+            if (pc_plays_now){
+                board.computers_turn();
+            } else {
+                board.users_turn();
+            }
+            pc_plays_now = !pc_plays_now;
+        }
+        if (pc_plays_now){
+            System.out.println("YOU LOST!");
+        } else {
+            System.out.println("YOU WON!");
+        }
+
+        //players take turns in starting a new game
+        pc_plays_first = !pc_plays_first;
+        if (first_run) {
+            first_run = false;
+        }
+
+    }
+
+    /* TODO • !pokud pretahnu posledni tah do minusu, sice me to varuje, ale vyhodi, ze jsem prohral - proc?
+            • enkapsulovat fields a methods - nastavit access aby zbytecne nebyl pristup zvenku
+              (napovidac v IDE ukazuje, co lze z objektu/tridy vytahnout (po napsani tecky)
+            • napsat zaverecne vyhlaseni, jestli chce hrac pokracovat ve hre
      */
 }
 
@@ -56,7 +103,7 @@ class Board {
     //User's turn
     public void users_turn() {
         UsersInput users_input = new UsersInput();
-        matches_on_board -= users_input.MinMaxNumber("How many matchsticks do you want to take? (You can take 1 or 2 or 3.) Enter the number and press Enter.", 1, 3);
+        matches_on_board -= users_input.MinMaxNumber("How many matchsticks do you want to take? (You can take 1 or 2 or 3.) Enter the number and press Enter.", 1, 3, matches_on_board);
     }
 
     //Computer's turn
@@ -81,7 +128,7 @@ class Board {
 }
 
 class UsersInput {
-    //More methods with different parameters could be added later here (polymorphism)
+    //2 polymorph methods
     public int MinMaxNumber (String prompt, int min, int max){
         System.out.println(prompt);
         int user_takes = 0;
@@ -104,6 +151,43 @@ class UsersInput {
                 System.out.println("You can not take less then 1 matchsticks, try again.");
             } else if (user_takes > max){
                 System.out.println("You can not take more than 3 matchsticks, try again.");
+            }
+        } while (user_takes < min || user_takes > max);
+        /* return in if statements: 2 options
+           1) it must be in all if/else statements (so the compiler is sure the method will certainly return in any case)
+           2) we will use it only at the end of the method
+        */
+        return user_takes;
+    }
+
+    public int MinMaxNumber (String prompt, int min, int max, int matches_on_board){
+        System.out.println(prompt);
+        int user_takes = 0;
+        boolean input_is_int;
+        do {
+            do {
+                try {
+                    input_is_int = true;
+                    user_takes = ScannerSystemInSingleton.getInstance().nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println("You have to enter a number, try again.");
+                    input_is_int = false;
+                    /* When a scanner throws an InputMismatchException, the scanner will not skip the token
+                       that caused the exception, so it must be skipped using other method, like nextLine(),
+                       which skips the whole wrong input line. */
+                    ScannerSystemInSingleton.getInstance().nextLine();
+                }
+            } while (!input_is_int);
+            if (user_takes < min) {
+                System.out.println("You can not take less then 1 matchsticks, try again.");
+            } else if (user_takes > max){
+                System.out.println("You can not take more than 3 matchsticks, try again.");
+            } else if (matches_on_board==3 && user_takes>2) {
+                System.out.println("You can not take more than 2 matchsticks now, try again.");
+            } else if (matches_on_board==2 && user_takes>1) {
+                System.out.println("You can not take more than 1 matchstick now, try again.");
+            } else if (matches_on_board==1 && user_takes>1) {
+                System.out.println("You can not take more than 1 matchstick now, try again.");
             }
         } while (user_takes < min || user_takes > max);
         /* return in if statements: 2 options
