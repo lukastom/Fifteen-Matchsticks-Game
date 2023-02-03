@@ -12,6 +12,7 @@ public class Main {
         menu.welcome();
 
         boolean user_wants_exit_game = false;
+        int user_chose_end;
 
         while (!user_wants_exit_game){
             int user_chose = menu.beginning_menu();
@@ -20,7 +21,7 @@ public class Main {
                     Game game = new Game();
                     while (!game.user_wants_exit_round){
                         game.lets_play();
-                        int user_chose_end = menu.end_menu();
+                        user_chose_end = menu.end_menu();
                         switch (user_chose_end){
                             case 2 -> game.user_wants_exit_round = true;
                             case 3 -> {
@@ -35,8 +36,10 @@ public class Main {
                 case 3 -> WriteText.winningStrategy();
                 case 4 -> {
                     menu.bye();
-                    //Exiting with status 0 = normal exit. Non-zero status (e.g. 1) = abnormal exit. Status will be passed to OS.
-                    //System.exit(0);
+                    /*Exiting with status 0 = normal exit. Non-zero status (e.g. 1) = abnormal exit. Status will be passed to OS.
+                      //System.exit(0);
+                      No need tu use this here. The program just runs to the end.
+                     */
                     user_wants_exit_game = true;
                 }
             }
