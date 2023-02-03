@@ -69,6 +69,7 @@ class Menu {
     void welcome() {
         System.out.println("━━━━━━━━━━━━━━━ 1 5  M A T C H S T I C K S  G A M E  W E L C O M E S  Y O U ━━━━━━━━━━━━━━━");
     }
+
     int beginning_menu () {
         String[] menu_items = {
                 "───── MENU ─────",
@@ -83,6 +84,7 @@ class Menu {
         UsersInput menu = new UsersInput();
         return menu.MinMaxNumber(menu_items_string, 1, 4);
     }
+
     int end_menu () {
         String[] menu_items = {
                 "───── CONTINUE TO PLAY? ─────",
@@ -95,19 +97,23 @@ class Menu {
         UsersInput menu = new UsersInput();
         return menu.MinMaxNumber(menu_items_string, 1, 4);
     }
+
     void bye() {
         System.out.println("━━━━━━━━━━━━━━━ T H A N K  Y O U  F O R  P L A Y I N G  A N D  H A V E  A  N I C E  D A Y! ━━━━━━━━━━━━━━━");
         System.out.println("Exiting the program...");
     }
+
 }
 
 class WriteText{
+
     static void rules() {
         System.out.println("───── RULES ─────");
         System.out.println("There are 15 matchsticks on the table. A lot is drawn to see who will make the first turn. Players take turns. A player can take out 1 or 2 or 3 matchsticks. The player that takes the last matchstick lost. Players take turns to start the next game.");
         System.out.println("(To continue, press Enter.)");
         ScannerSystemInSingleton.getInstance().nextLine();
     }
+
     static void winningStrategy() {
         System.out.println("───── WINNING STRATEGY ─────");
         System.out.println("• How to win this game? It helps to visualize the 15 matchsticks like this:");
@@ -126,9 +132,11 @@ class WriteText{
         System.out.println("(To continue, press Enter.)");
         ScannerSystemInSingleton.getInstance().nextLine();
     }
+
 }
 
 class Game {
+
     static int lot;
     Board board;
     boolean first_run;
@@ -175,6 +183,7 @@ class Game {
             }
             pc_plays_now = !pc_plays_now;
         }
+
         if (pc_plays_now){
             pc_score += 1;
             System.out.println("YOU LOST!");
@@ -182,11 +191,12 @@ class Game {
             user_score += 1;
             System.out.println("YOU WON!");
         }
+
         System.out.println("Score you vs. me is: " + user_score + ":" + pc_score + ".");
         System.out.println("(To continue, press Enter.)");
         ScannerSystemInSingleton.getInstance().nextLine();
 
-        //players take turns in starting a new game
+        //players take turns in starting a new round
         pc_plays_first = !pc_plays_first;
         if (first_run) {
             first_run = false;
@@ -199,8 +209,8 @@ class Game {
 
 }
 
-
 class Board {
+
     int matches_on_board;
 
     //Constructor
@@ -251,6 +261,7 @@ class Board {
 }
 
 class UsersInput {
+
     //2 polymorph methods
     public int MinMaxNumber (String prompt, int min, int max){
         System.out.println(prompt);
