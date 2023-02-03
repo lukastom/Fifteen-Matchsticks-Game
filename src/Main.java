@@ -50,9 +50,9 @@ public class Main {
 class Menu {
 
     String menuItemsToString(String[] menu_items){
-        /*In modern Java compiler, every String concatenation is converted from + to StringBuilder and append()
+        /*In modern Java compiler, every String concatenation is converted from + to StringBuilder and append().
           If we use + in a loop, it will create StringBuilder for every iteration, with a heavy performance penalty.
-          So, it is recommended to use StringBuilder and append() when concatenating in a loop.
+          So, it is recommended to use directly StringBuilder and append() when concatenating in a loop.
          */
         StringBuilder menu_items_string_builder = new StringBuilder();
         for (int i = 0; i < menu_items.length; i++){
@@ -72,11 +72,12 @@ class Menu {
 
     int beginning_menu () {
         String[] menu_items = {
-                "───── MENU ─────",
-                "1 - PLAY NEW GAME",
-                "2 - RULES",
-                "3 - WINNING STRATEGY",
-                "4 - EXIT",
+                "┎────────── MENU ──────────┒",
+                "┃  1 - PLAY NEW GAME       ┃",
+                "┃  2 - RULES               ┃",
+                "┃  3 - WINNING STRATEGY    ┃",
+                "┃  4 - EXIT                ┃",
+                "┖──────────────────────────┚",
                 "(Enter a number and press Enter.)"
         };
         String menu_items_string = menuItemsToString(menu_items);
@@ -87,10 +88,11 @@ class Menu {
 
     int end_menu () {
         String[] menu_items = {
-                "───── CONTINUE TO PLAY? ─────",
-                "1 - CONTINUE TO PLAY",
-                "2 - BACK TO MAIN MENU",
-                "3 - EXIT",
+                "┎──── CONTINUE TO PLAY? ────┒",
+                "┃  1 - CONTINUE TO PLAY     ┃",
+                "┃  2 - BACK TO MAIN MENU    ┃",
+                "┃  3 - EXIT                 ┃",
+                "┖───────────────────────────┚",
                 "(Enter a number and press Enter.)"
         };
         String menu_items_string = menuItemsToString(menu_items);
