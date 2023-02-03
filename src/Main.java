@@ -8,8 +8,69 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Game game = new Game();
-        game.lets_play();
+        Menu menu = new Menu();
+        menu.beginning_menu();
+    }
+}
+
+class Menu {
+    void beginning_menu () {
+        System.out.println("- - - - - - - 1 5  M A T C H S T I C K S  G A M E  W E L C O M E S  Y O U - - - - - - -");
+        //TODO: menu loop
+        String[] menu_items = {
+                "-----MENU-----",
+                "1 - PLAY NEW GAME",
+                "2 - RULES",
+                "3 - WINNING STRATEGY",
+                "4 - EXIT",
+                "(Enter a number and press Enter.)"
+        };
+        String menu_items_string = "";
+        for (int i = 0; i < menu_items.length; i++){
+            //TODO: the last item should be without newline
+            menu_items_string += menu_items[i] + System.lineSeparator();
+        }
+        UsersInput menu = new UsersInput();
+        int user_chose = menu.MinMaxNumber(menu_items_string, 1, 4);
+        switch (user_chose) {
+            case 1 :
+                Game game = new Game();
+                game.lets_play();
+                break;
+            case 2 :
+                WriteText.rules();
+                break;
+            case 3 :
+                WriteText.winningStrategy();
+                break;
+            case 4 :
+                System.out.println("Exiting the program...");
+                System.exit(0);
+                break;
+        }
+    }
+    void end_menu () {
+
+    }
+}
+
+class WriteText{
+    static void rules() {
+        System.out.println("There are 15 matchsticks on the table. A lot is drawn to see who will make the first turn. Players take turns. A player can take out 1 or 2 or 3 matchsticks. The player that takes the last matchstick lost. Players take turns to start the next game.");
+    }
+    static void winningStrategy() {
+        System.out.println("• How to win this game? It helps to visualize the 15 matchsticks like this:");
+        System.out.println("| - we want to push our opponent to take this last matchstick");
+        System.out.println("|||| - floor 1");
+        System.out.println("|||| - floor 2");
+        System.out.println("|||| - floor 3");
+        System.out.println("|| - floor 4 (the remainder)");
+        System.out.println("• Imagine the game as a building demolition. Every time when it is your turn, demolish 1 complete floor.");
+        System.out.println("  • When you demolish a complete floor, you know for certain that you will be able to demolish the next complete floor and push your opponent to take the last matchstick at the end.");
+        System.out.println("  • Note that whatever you opponent does, you can always demolish one complete floor.");
+        System.out.println("  • 1 floor consists of 4 matchsticks. If your opponent takes 1, you take 3. If he takes 2, you take 2. If he takes 3, you take 1. In any case, a floor of 4 matches is gone.");
+        System.out.println("• Of course, problem are these 2 remaining matches.");
+        System.out.println("  • If it is a player's turn, he takes 2 matchsticks and continue the winning strategy, he will always win. This is called first-player-win in combinatorial game theory.");
     }
 }
 
@@ -62,6 +123,8 @@ class Game {
         } else {
             System.out.println("YOU WON!");
         }
+        System.out.println("To continue, press Enter.");
+        ScannerSystemInSingleton.getInstance().nextLine();
 
         //players take turns in starting a new game
         pc_plays_first = !pc_plays_first;
@@ -71,7 +134,7 @@ class Game {
 
     }
 
-    /* TODO • !pokud pretahnu posledni tah do minusu, sice me to varuje, ale vyhodi, ze jsem prohral - proc?
+    /* TODO • v poslednim tahu pise pocitac, ze vzal 3 sirky, kdyz tam lezi jen jedna (kdyz prohrava)
             • enkapsulovat fields a methods - nastavit access aby zbytecne nebyl pristup zvenku
               (napovidac v IDE ukazuje, co lze z objektu/tridy vytahnout (po napsani tecky)
             • napsat zaverecne vyhlaseni, jestli chce hrac pokracovat ve hre
@@ -153,6 +216,8 @@ class UsersInput {
                 System.out.println("You can not take more than 3 matchsticks, try again.");
             }
         } while (user_takes < min || user_takes > max);
+        //Scanner nextInt() consumes only the number, not the newline created by pressing Enter. This consumes the newline.
+        ScannerSystemInSingleton.getInstance().nextLine();
         /* return in if statements: 2 options
            1) it must be in all if/else statements (so the compiler is sure the method will certainly return in any case)
            2) we will use it only at the end of the method
@@ -164,7 +229,9 @@ class UsersInput {
         System.out.println(prompt);
         int user_takes = 0;
         boolean input_is_int;
+        boolean last_turn_wrong;
         do {
+            last_turn_wrong = false;
             do {
                 try {
                     input_is_int = true;
@@ -183,17 +250,17 @@ class UsersInput {
             } else if (user_takes > max){
                 System.out.println("You can not take more than 3 matchsticks, try again.");
             } else if (matches_on_board==3 && user_takes>2) {
+                last_turn_wrong = true;
                 System.out.println("You can not take more than 2 matchsticks now, try again.");
             } else if (matches_on_board==2 && user_takes>1) {
+                last_turn_wrong = true;
                 System.out.println("You can not take more than 1 matchstick now, try again.");
             } else if (matches_on_board==1 && user_takes>1) {
+                last_turn_wrong = true;
                 System.out.println("You can not take more than 1 matchstick now, try again.");
             }
-        } while (user_takes < min || user_takes > max);
-        /* return in if statements: 2 options
-           1) it must be in all if/else statements (so the compiler is sure the method will certainly return in any case)
-           2) we will use it only at the end of the method
-        */
+        } while (user_takes < min || user_takes > max || last_turn_wrong);
+        ScannerSystemInSingleton.getInstance().nextLine();
         return user_takes;
     }
 }
