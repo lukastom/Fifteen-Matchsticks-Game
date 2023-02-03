@@ -50,10 +50,19 @@ public class Main {
 class Menu {
 
     String menuItemsToString(String[] menu_items){
-        /*In modern Java compiler, every String concatenation is converted from + to StringBuilder and append().
-          If we use + in a loop, it will create StringBuilder for every iteration, with a heavy performance penalty.
-          So, it is recommended to use directly StringBuilder and append() when concatenating in a loop.
-         */
+        /* • StringBuilder = mutable vs String = immutable.
+            • With every String variable reassign, it actually does not overwrite the value, but creates a new object!
+              (which takes some time and takes more memory)
+              (these objects are created in STRING CONSTANT POOL in HEAP)
+              (In a loop, modern Java compiler converts internally all concatenations for StringBuilder, but creates a new StringBuilder object for every loop run.
+               This is also not good for performance, so it is recommended to use directly 1 StringBuilder object for concatenations in a loop.)
+              • if we assign two String variables to the same string, they will reference the same object. (This saves memory.)
+                • this is also implicitly thread-safe
+              • advantage: security - database passwords etc. are in immutable object, can not be changed
+                • String class is declared final, so it can not be overridden
+            • String is immutable = "it can not be mutated" = unmodifiable, unchangeable
+            • mutable version of String is: 1) StringBuilder, 2) StringBuffer
+          */
         StringBuilder menu_items_string_builder = new StringBuilder();
         for (int i = 0; i < menu_items.length; i++){
             if (i==(menu_items.length-1)){

@@ -16,4 +16,4 @@ There are 15 matchsticks on the table. Players take turns. A player can take out
 
 • System.exit(0) statement.
 
-• Concatenating strings in a loop - StringBuilder and append().
+• Concatenating strings in a loop - StringBuilder and append(), immutability of String class.
