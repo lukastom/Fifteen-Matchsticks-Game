@@ -13,3 +13,7 @@ There are 15 matchsticks on the table. Players take turns. A player can take out
 • How to use return within if/else conditions.
 
 • Real life usage of Random class and modulo.
+
+• System.exit(0) statement.
+
+• Concatenating strings in a loop - StringBuilder and append().
