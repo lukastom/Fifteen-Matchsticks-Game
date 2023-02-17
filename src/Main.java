@@ -11,23 +11,23 @@ public class Main {
         Menu menu = new Menu();
         menu.welcome();
 
-        boolean user_wants_exit_game = false;
-        int user_chose_end;
+        boolean userWantsExitGame = false;
+        int userChoseEnd;
 
-        while (!user_wants_exit_game){
-            int user_chose = menu.beginning_menu();
-            switch (user_chose) {
+        while (!userWantsExitGame){
+            int userChose = menu.beginningMenu();
+            switch (userChose) {
                 case 1 -> {
                     Game game = new Game();
-                    while (!game.user_wants_exit_round){
-                        game.lets_play();
-                        user_chose_end = menu.end_menu();
-                        switch (user_chose_end){
-                            case 2 -> game.user_wants_exit_round = true;
+                    while (!game.userWantsExitRound){
+                        game.letsPlay();
+                        userChoseEnd = menu.endMenu();
+                        switch (userChoseEnd){
+                            case 2 -> game.userWantsExitRound = true;
                             case 3 -> {
                                 menu.bye();
-                                game.user_wants_exit_round = true;
-                                user_wants_exit_game = true;
+                                game.userWantsExitRound = true;
+                                userWantsExitGame = true;
                             }
                         }
                     }
@@ -40,7 +40,7 @@ public class Main {
                       //System.exit(0);
                       No need tu use this here. The program just runs to the end.
                      */
-                    user_wants_exit_game = true;
+                    userWantsExitGame = true;
                 }
             }
         }
@@ -49,7 +49,7 @@ public class Main {
 
 class Menu {
 
-    String menuItemsToString(String[] menu_items){
+    String menuItemsToString(String[] menuItems){
         /* • StringBuilder = mutable vs String = immutable.
             • With every String variable reassign, it actually does not overwrite the value, but creates a new object!
               (which takes some time and takes more memory)
@@ -63,24 +63,24 @@ class Menu {
             • String is immutable = "it can not be mutated" = unmodifiable, unchangeable
             • mutable version of String is: 1) StringBuilder, 2) StringBuffer
           */
-        StringBuilder menu_items_string_builder = new StringBuilder();
-        for (int i = 0; i < menu_items.length; i++){
-            if (i==(menu_items.length-1)){
-                menu_items_string_builder.append(menu_items[i]);
+        StringBuilder menuItemsStringBuilder = new StringBuilder();
+        for (int i = 0; i < menuItems.length; i++){
+            if (i==(menuItems.length-1)){
+                menuItemsStringBuilder.append(menuItems[i]);
             } else {
-                menu_items_string_builder.append(menu_items[i]).append(System.lineSeparator());
+                menuItemsStringBuilder.append(menuItems[i]).append(System.lineSeparator());
             }
         }
         //toString() converts StringBuilder to String
-        return menu_items_string_builder.toString();
+        return menuItemsStringBuilder.toString();
     }
 
     void welcome() {
         System.out.println("━━━━━━━━━━━━━━━ 1 5  M A T C H S T I C K S  G A M E  W E L C O M E S  Y O U ━━━━━━━━━━━━━━━");
     }
 
-    int beginning_menu () {
-        String[] menu_items = {
+    int beginningMenu() {
+        String[] menuItems = {
                 "┎────────── MENU ──────────┒",
                 "┃  1 - PLAY NEW GAME       ┃",
                 "┃  2 - RULES               ┃",
@@ -89,14 +89,14 @@ class Menu {
                 "┖──────────────────────────┚",
                 "(Enter a number and press Enter.)"
         };
-        String menu_items_string = menuItemsToString(menu_items);
+        String menuItemsString = menuItemsToString(menuItems);
 
         UsersInput menu = new UsersInput();
-        return menu.MinMaxNumber(menu_items_string, 1, 4);
+        return menu.MinMaxNumber(menuItemsString, 1, 4);
     }
 
-    int end_menu () {
-        String[] menu_items = {
+    int endMenu() {
+        String[] menuItems = {
                 "┎──── CONTINUE TO PLAY? ────┒",
                 "┃  1 - CONTINUE TO PLAY     ┃",
                 "┃  2 - BACK TO MAIN MENU    ┃",
@@ -104,9 +104,9 @@ class Menu {
                 "┖───────────────────────────┚",
                 "(Enter a number and press Enter.)"
         };
-        String menu_items_string = menuItemsToString(menu_items);
+        String menuItemsString = menuItemsToString(menuItems);
         UsersInput menu = new UsersInput();
-        return menu.MinMaxNumber(menu_items_string, 1, 4);
+        return menu.MinMaxNumber(menuItemsString, 1, 4);
     }
 
     void bye() {
@@ -125,6 +125,7 @@ class WriteText{
         ScannerSystemInSingleton.getInstance().nextLine();
     }
 
+    //TODO: This seems repetitive (System.out.println many times). I could use the same method when printing the menu lines from a string. (menuItemsToString)
     static void winningStrategy() {
         System.out.println("───── WINNING STRATEGY ─────");
         System.out.println("• How to win this game? It helps to visualize the 15 matchsticks like this:");
@@ -137,7 +138,7 @@ class WriteText{
         System.out.println("  • When you demolish a complete floor, you know for certain that you will be able to demolish the next complete floor and push your opponent to take the last matchstick at the end.");
         System.out.println("  • Note that whatever you opponent does, you can always demolish one complete floor.");
         System.out.println("  • 1 floor consists of 4 matchsticks. If your opponent takes 1, you take 3. If he takes 2, you take 2. If he takes 3, you take 1. In any case, a floor of 4 matches is gone.");
-        System.out.println("• Of course, problem are these 2 remaining matches.");
+        System.out.println("• Of course, problem are these 2 remaining matches at the start of the game.");
         System.out.println("  • If it is a player's turn, he takes 2 matchsticks and continue the winning strategy, he will always win. This is called first-player-wins in combinatorial game theory.");
         System.out.println("  • If you are performing this as a party trick, do not quickly tell them the rules and crush them first. Let them find the winning strategy. If you are the first to play, do not always take 2 matches. Obscure the strategy by taking a different number of matchsticks and demolish the complete floor next turn.");
         System.out.println("(To continue, press Enter.)");
@@ -150,71 +151,67 @@ class Game {
 
     static int lot;
     Board board;
-    boolean first_run;
-    boolean pc_plays_first;
-    boolean pc_plays_now;
-    boolean user_wants_exit_round;
-    int pc_score = 0;
-    int user_score = 0;
+    boolean firstRun, pcPlaysFirst, pcPlaysNow, userWantsExitRound;
+    int pcScore = 0, userScore = 0;
 
     Game (){
         Random random = new Random();
         lot = random.nextInt(2); //0 - computer, 1 - player
         if (lot == 0) {
             System.out.println("A random draw decided that the first turn is mine this game.");
-            pc_plays_first = true;
-            pc_plays_now = true;
+            pcPlaysFirst = true;
+            pcPlaysNow = true;
         } else {
             System.out.println("A random draw decided that the first turn is yours this game.");
-            pc_plays_first = false;
-            pc_plays_now = false;
+            pcPlaysFirst = false;
+            pcPlaysNow = false;
         }
-        first_run = true;
+        firstRun = true;
         board = new Board();
     }
 
-    public void lets_play(){
+    public void letsPlay(){
 
-        if (!first_run){
-            if (pc_plays_first){
+        if (!firstRun){
+            if (pcPlaysFirst){
                 System.out.println("The first turn is mine this game.");
-                pc_plays_now = true;
+                pcPlaysNow = true;
             } else {
                 System.out.println("The first turn is yours this game.");
-                pc_plays_now = false;
+                pcPlaysNow = false;
             }
         }
 
-        while (board.matches_on_board > 0) {
-            board.draw_board();
-            if (pc_plays_now){
-                board.computers_turn();
+        while (board.matchesOnBoard > 0) {
+            board.drawBoard();
+            if (pcPlaysNow){
+                board.computersTurn();
             } else {
-                board.users_turn();
+                board.usersTurn();
             }
-            pc_plays_now = !pc_plays_now;
+            pcPlaysNow = !pcPlaysNow;
         }
 
-        if (pc_plays_now){
-            pc_score += 1;
+        if (pcPlaysNow){
+            pcScore += 1;
             System.out.println("YOU LOST!");
         } else {
-            user_score += 1;
+            userScore += 1;
             System.out.println("YOU WON!");
         }
 
-        System.out.println("Score you vs. me is: " + user_score + ":" + pc_score + ".");
+        System.out.println("Score you vs. me is: " + userScore + ":" + pcScore + ".");
         System.out.println("(To continue, press Enter.)");
         ScannerSystemInSingleton.getInstance().nextLine();
 
         //players take turns in starting a new round
-        pc_plays_first = !pc_plays_first;
-        if (first_run) {
-            first_run = false;
+        pcPlaysFirst = !pcPlaysFirst;
+        if (firstRun) {
+            firstRun = false;
         }
 
         //Putting the matchsticks back on the board
-        board.matches_on_board = 15;
+        board.matchesOnBoard = 15;
 
     }
 
@@ -222,136 +219,136 @@ class Game {
 
 class Board {
 
-    int matches_on_board;
+    int matchesOnBoard;
 
     //Constructor
     public Board() {
-        matches_on_board = 15;
+        matchesOnBoard = 15;
     }
 
     //Drawing matchsticks on the board
-    public void draw_board() {
-        System.out.println("There are " + matches_on_board + " matchsticks on the board now.");
-        if (matches_on_board > 0) {
-            for (int i = 0; i < (matches_on_board - 1); i++) {
+    public void drawBoard() {
+        System.out.println("There are " + matchesOnBoard + " matchsticks on the board now.");
+        if (matchesOnBoard > 0) {
+            for (int i = 0; i < (matchesOnBoard - 1); i++) {
                 System.out.print("| ");
             }
             System.out.println("|");
-        } else if (matches_on_board < 0) {
+        } else if (matchesOnBoard < 0) {
             System.out.println("Number of matchsticks on the board can not be less then zero.");
         }
     }
 
     //User's turn
-    public void users_turn() {
-        UsersInput users_input = new UsersInput();
-        matches_on_board -= users_input.MinMaxNumber("How many matchsticks do you want to take? (You can take 1 or 2 or 3. Enter the number and press Enter.)", 1, 3, matches_on_board);
+    public void usersTurn() {
+        UsersInput usersInput = new UsersInput();
+        matchesOnBoard -= usersInput.MinMaxNumber("How many matchsticks do you want to take? (You can take 1 or 2 or 3. Enter the number and press Enter.)", 1, 3, matchesOnBoard);
     }
 
     //Computer's turn
-    public void computers_turn(){
-        int computer_takes;
-        if (matches_on_board == 1) {  //if this is true, the rest else if/else statements will be skipped
-            computer_takes = 1;
+    public void computersTurn(){
+        int computerTakes;
+        if (matchesOnBoard == 1) {  //if this is true, the rest else if/else statements will be skipped
+            computerTakes = 1;
         //If computer goes first, it takes random number to obscure the winning strategy. It also takes random number in non-winnable situation.
-        } else if ((matches_on_board == 15) || ((matches_on_board-1)%4 == 0)) {
-            Random random_number = new Random();
-            computer_takes = random_number.nextInt(3)+1;   //nextInt(x) returns random int from 0 to (x-1)
+        } else if ((matchesOnBoard == 15) || ((matchesOnBoard -1)%4 == 0)) {
+            Random randomNumber = new Random();
+            computerTakes = randomNumber.nextInt(3)+1;   //nextInt(x) returns random int from 0 to (x-1)
         //This is the optimal winning strategy
         } else {
-            computer_takes = (matches_on_board-1)%4;
+            computerTakes = (matchesOnBoard -1)%4;
         }
-        if (computer_takes == 1) {
-            System.out.println("I have taken " + computer_takes + " matchstick.");
+        if (computerTakes == 1) {
+            System.out.println("I have taken " + computerTakes + " matchstick.");
         } else {
-            System.out.println("I have taken " + computer_takes + " matchsticks.");
+            System.out.println("I have taken " + computerTakes + " matchsticks.");
         }
-        matches_on_board -= computer_takes;
+        matchesOnBoard -= computerTakes;
     }
 
 }
 
 class UsersInput {
 
-    //2 polymorph methods
+    /*2 polymorph methods, overloading
+      TODO: overloading always goes against DRY principle. So it is always a dilemma if use it or not. I am still thinking about this.
+     */
     public int MinMaxNumber (String prompt, int min, int max){
         System.out.println(prompt);
-        int user_takes = 0;
-        boolean input_is_int;
+        int userTakes = 0;
+        boolean inputIsInt;
         do {
             do {
                 try {
-                    input_is_int = true;
-                    user_takes = ScannerSystemInSingleton.getInstance().nextInt();
+                    inputIsInt = true;
+                    userTakes = ScannerSystemInSingleton.getInstance().nextInt();
                 } catch (InputMismatchException e) {
                     System.out.println("You have to enter a number, try again!");
-                    input_is_int = false;
+                    inputIsInt = false;
                     /* When a scanner throws an InputMismatchException, the scanner will not skip the token
                        that caused the exception, so it must be skipped using other method, like nextLine(),
                        which skips the whole wrong input line. */
                     ScannerSystemInSingleton.getInstance().nextLine();
                 }
-            } while (!input_is_int);
-            if (user_takes < min) {
+            } while (!inputIsInt);
+            if (userTakes < min) {
                 System.out.println("You can not take less then 1 matchsticks, try again!");
-            } else if (user_takes > max){
+            } else if (userTakes > max){
                 System.out.println("You can not take more than 3 matchsticks, try again!");
             }
-        } while (user_takes < min || user_takes > max);
+        } while (userTakes < min || userTakes > max);
         //Scanner nextInt() consumes only the number, not the newline created by pressing Enter. This consumes the newline.
         ScannerSystemInSingleton.getInstance().nextLine();
         /* return in if statements: 2 options
            1) it must be in all if/else statements (so the compiler is sure the method will certainly return in any case)
            2) we will use it only at the end of the method
         */
-        return user_takes;
+        return userTakes;
     }
 
-    public int MinMaxNumber (String prompt, int min, int max, int matches_on_board){
+    public int MinMaxNumber (String prompt, int min, int max, int matchesOnBoard){
         System.out.println(prompt);
-        int user_takes = 0;
-        boolean input_is_int;
-        boolean last_turn_wrong;
+        int userTakes = 0;
+        boolean inputIsInt;
+        boolean lastTurnWrong;
         do {
-            last_turn_wrong = false;
+            lastTurnWrong = false;
             do {
                 try {
-                    input_is_int = true;
-                    user_takes = ScannerSystemInSingleton.getInstance().nextInt();
+                    inputIsInt = true;
+                    userTakes = ScannerSystemInSingleton.getInstance().nextInt();
                 } catch (InputMismatchException e) {
                     System.out.println("You have to enter a number, try again!");
-                    input_is_int = false;
-                    /* When a scanner throws an InputMismatchException, the scanner will not skip the token
-                       that caused the exception, so it must be skipped using other method, like nextLine(),
-                       which skips the whole wrong input line. */
+                    inputIsInt = false;
                     ScannerSystemInSingleton.getInstance().nextLine();
                 }
-            } while (!input_is_int);
-            if (user_takes < min) {
+            } while (!inputIsInt);
+            if (userTakes < min) {
                 System.out.println("You can not take less then 1 matchsticks, try again!");
-            } else if (user_takes > max){
+            } else if (userTakes > max){
                 System.out.println("You can not take more than 3 matchsticks, try again!");
-            } else if (matches_on_board==3 && user_takes>2) {
-                last_turn_wrong = true;
+            } else if (matchesOnBoard==3 && userTakes>2) {
+                lastTurnWrong = true;
                 System.out.println("You can not take more than 2 matchsticks now, try again!");
-            } else if (matches_on_board==2 && user_takes>1) {
-                last_turn_wrong = true;
+            } else if (matchesOnBoard==2 && userTakes>1) {
+                lastTurnWrong = true;
                 System.out.println("You can not take more than 1 matchstick now, try again!");
-            } else if (matches_on_board==1 && user_takes>1) {
-                last_turn_wrong = true;
+            } else if (matchesOnBoard==1 && userTakes>1) {
+                lastTurnWrong = true;
                 System.out.println("You can not take more than 1 matchstick now, try again!");
             }
-        } while (user_takes < min || user_takes > max || last_turn_wrong);
+        } while (userTakes < min || userTakes > max || lastTurnWrong);
         ScannerSystemInSingleton.getInstance().nextLine();
-        return user_takes;
+        return userTakes;
     }
 }
 
 /* ----- SINGLETON CLASS -----
    • Having multiple scanners on the same stream is a bad practice, because scanners would share and consume that 1 stream.
    • There are less elegant solutions, like global variable (e.g. in Main and called like Main.scanner by other classes) or
-     pass scanner as a parameter in methods called like board.users_turn(scanner).
+     pass scanner as a parameter in methods called like board.usersTurn(scanner).
      The truly right OOP solution is to declare a SINGLETON CLASS (=class, from which only 1 object can be instantiated).
+   • Singletons are often considered as bad practice in OOP (it is similar to global variable), but this is an example of a good use.
    • Here, we see LAZY INITIALIZATION implementation (memory effective, but not thread-safe)
  */
 final class ScannerSystemInSingleton {    //final = can not be extended
