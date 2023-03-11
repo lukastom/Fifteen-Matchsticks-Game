@@ -2,10 +2,6 @@
  *  ©2023 Lukáš Tomek
  */
 
-import java.util.InputMismatchException;
-import java.util.Random;
-import java.util.Scanner;
-
 public class Main {
     public static void main(String[] args) {
         Menu menu = new Menu();
@@ -38,7 +34,7 @@ public class Main {
                     menu.bye();
                     /*Exiting with status 0 = normal exit. Non-zero status (e.g. 1) = abnormal exit. Status will be passed to OS.
                       //System.exit(0);
-                      No need tu use this here. The program just runs to the end.
+                      No need to use this here. The program just runs to the end.
                      */
                     userWantsExitGame = true;
                 }

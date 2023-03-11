@@ -1,11 +1,21 @@
 import java.util.Random;
 
 public class Board {
-    int matchesOnBoard;
+    private int matchesOnBoard;
 
     //Constructor
     public Board() {
         matchesOnBoard = 15;
+    }
+
+    //Setter
+    public void setMatchesOnBoard(int matchesOnBoard) {
+        this.matchesOnBoard = matchesOnBoard;
+    }
+
+    //Getter
+    public int getMatchesOnBoard() {
+        return matchesOnBoard;
     }
 
     //Drawing matchsticks on the board

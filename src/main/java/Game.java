@@ -34,7 +34,7 @@ public class Game {
             }
         }
 
-        while (board.matchesOnBoard > 0) {
+        while (board.getMatchesOnBoard() > 0) {
             board.drawBoard();
             if (pcPlaysNow){
                 board.computersTurn();
@@ -63,7 +63,7 @@ public class Game {
         }
 
         //Putting the matchsticks back on the board
-        board.matchesOnBoard = 15;
+        board.setMatchesOnBoard(15);
 
     }
 }
