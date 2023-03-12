@@ -1,8 +1,9 @@
 import java.util.InputMismatchException;
+import java.util.Scanner;
 
 public class UsersInput {
     /*2 polymorph methods, overloading
-  TODO: overloading always goes against DRY principle. So it is always a dilemma if use it or not. I am still thinking about this.
+     TODO: overloading always goes against DRY principle. So it is always a dilemma if use it or not. I am still thinking about this.
     */
     public int MinMaxNumber (String prompt, int min, int max){
         System.out.println(prompt);
@@ -23,9 +24,9 @@ public class UsersInput {
                 }
             } while (!inputIsInt);
             if (userTakes < min) {
-                System.out.println("You can not take less then 1 matchsticks, try again!");
+                System.out.println("You can not enter less then " + min + ", try again!");
             } else if (userTakes > max){
-                System.out.println("You can not take more than 3 matchsticks, try again!");
+                System.out.println("You can not enter more than " + max + ", try again!");
             }
         } while (userTakes < min || userTakes > max);
         //Scanner nextInt() consumes only the number, not the newline created by pressing Enter. This consumes the newline.
@@ -55,9 +56,9 @@ public class UsersInput {
                 }
             } while (!inputIsInt);
             if (userTakes < min) {
-                System.out.println("You can not take less then 1 matchsticks, try again!");
+                System.out.println("You can not take less then " + min + " matchsticks, try again!");
             } else if (userTakes > max){
-                System.out.println("You can not take more than 3 matchsticks, try again!");
+                System.out.println("You can not take more than " + max + " matchsticks, try again!");
             } else if (matchesOnBoard==3 && userTakes>2) {
                 lastTurnWrong = true;
                 System.out.println("You can not take more than 2 matchsticks now, try again!");
