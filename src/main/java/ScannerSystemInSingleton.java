@@ -30,6 +30,11 @@ final class ScannerSystemInSingleton {    //final = can not be extended
         }
         return scanner;  //ScannerSystemInSingleton.getInstance() will: 1) only 1st time called - create new object, 2) return scanner object
     }
+
+    //This is here just because of JUnit testing, so we can null the singleton between tests and reset Scanner(System.in) state this way.
+    public static void setInstance(Scanner scanner) {
+        ScannerSystemInSingleton.scanner = scanner;
+    }
 }
 
 /*----- SINGLETON CLASS: EAGER INITIALIZATION -----

@@ -2,9 +2,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class UsersInput {
-    /*2 polymorph methods, overloading
-     TODO: overloading always goes against DRY principle. So it is always a dilemma if use it or not. I am still thinking about this.
-    */
+    //2 polymorph methods, overloading
     public int MinMaxNumber (String prompt, int min, int max){
         System.out.println(prompt);
         int userTakes = 0;
