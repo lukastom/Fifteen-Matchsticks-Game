@@ -1,6 +1,6 @@
 # 15 Matchsticks Game
 
-* *used:* **Maven 3.9** for building, **JUnit 5** for testing all the user inputs
+* *manual configuration:* **Maven 3.9** for building, **JUnit 5** for testing all the user inputs
 * *note:* when you run jar in a Windows terminal, set the terminal to UTF-8 first (chcp 65001)
 
 ### This program also demonstrates:
